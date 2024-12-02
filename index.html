@@ -2,7 +2,6 @@
 <html>
   <head>
     <title>Spreadsheet Input/Output</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -37,8 +36,8 @@
   </head>
   <body>
     <h1>Spreadsheet Input/Output</h1>
-
-    <!-- Form to input data -->
+    
+    <!-- Form for inputting data -->
     <form id="dataForm">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" />
@@ -55,29 +54,23 @@
       <button type="button" onclick="submitData()">Submit</button>
     </form>
 
+    <!-- Display table of A10:BN11 -->
     <h2>All Sheet Data (A10:BN11)</h2>
     <div id="sheetData"></div>
 
     <script>
-      // Google Apps Script Web App URL (replace with your own)
-      const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxwF6b2JdjKMmlr__fWZIfca1SRWukcKNU7rPd0EfSsx-qVuNMbm9FGTn-yAV1LOHoHQ/exec';  // Replace with your URL
-
-      // Load the data from the Google Apps Script Web App on page load
+      // Load data when the page is loaded
       window.onload = function() {
-        fetchData();
-      };
-
-      // Fetch the data and display it as an HTML table
-      function fetchData() {
-        fetch(APP_SCRIPT_URL)
+        // Make an HTTP request to the Google Apps Script to fetch the data
+        fetch("https://script.google.com/macros/s/AKfycbypOs40LlSA9LeY4UiGx3SgHzKCtlUJvBMODUnUabkD/dev")
           .then(response => response.text())
-          .then(htmlContent => {
-            document.getElementById('sheetData').innerHTML = htmlContent;
+          .then(html => {
+            document.getElementById('sheetData').innerHTML = html; // Display the sheet data
           })
           .catch(error => console.error('Error fetching data:', error));
-      }
+      };
 
-      // Submit data to the Google Apps Script Web App
+      // Function to submit data to the sheet (via POST request)
       function submitData() {
         const data = {
           name: document.getElementById('name').value,
@@ -86,18 +79,17 @@
           year: document.getElementById('year').value,
         };
 
-        // Send the data as JSON using POST method
-        fetch(APP_SCRIPT_URL, {
-          method: 'POST',
+        fetch("YOUR_GOOGLE_APPS_SCRIPT_URL_HERE", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json"
           },
           body: JSON.stringify(data),
         })
         .then(response => response.text())
-        .then(responseText => {
-          alert(responseText);  // Show confirmation message
-          fetchData();  // Refresh the displayed data
+        .then(message => {
+          alert(message);
+          window.location.reload();  // Reload the page to show updated data
         })
         .catch(error => console.error('Error submitting data:', error));
       }
