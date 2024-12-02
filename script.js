@@ -1,59 +1,46 @@
-function doGet() {
-  return HtmlService.createHtmlOutputFromFile('Index');
+// The function that handles GET requests (to fetch data)
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Trang tinh1');
+  if (!sheet) {
+    return ContentService.createTextOutput("Sheet not found");
+  }
+
+  var range = sheet.getRange('A10:BN11');
+  var values = range.getValues();
+  var html = generateReportHtml(values);  // Generate table HTML
+  
+  return ContentService.createHtmlOutput(html);  // Return HTML to be displayed on the website
 }
 
-function generateReportHtml(sheet) {
-  var range = sheet.getRange('A10:BN11'); // Specific range
-  var values = range.getValues();
-  var backgroundColors = range.getBackgrounds(); // Get background colors
-
+// Generate HTML for table
+function generateReportHtml(values) {
   var html = '<table border="1" cellpadding="5" cellspacing="0">';
-  
   for (var i = 0; i < values.length; i++) {
     html += '<tr>';
-    
     for (var j = 0; j < values[i].length; j++) {
       var cellValue = values[i][j];
-      var bgColor = backgroundColors[i][j];
-      
-      // Check if the cell contains a date
-      if (cellValue instanceof Date) {
-        // Format the date to mm/dd/yyyy
-        cellValue = Utilities.formatDate(cellValue, Session.getScriptTimeZone(), "MM/dd/yyyy");
-      }
-      
-      html += '<td style="background-color:' + bgColor + ';">' + (cellValue || '') + '</td>';
+      html += '<td>' + (cellValue || '') + '</td>';
     }
-    
     html += '</tr>';
   }
-  
   html += '</table>';
-  
   return html;
 }
 
-function getAllSheetData() {
+// The function that handles POST requests (to update data)
+function doPost(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Trang tinh1');
   if (!sheet) {
-    return 'Sheet not found';
-  }
-  
-  // Generate the HTML table with the data and background colors
-  var reportHtml = generateReportHtml(sheet);
-  
-  return reportHtml;
-}
-
-function updateSheetData(data) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Trang tinh1');
-  if (!sheet) {
-    return;
+    return ContentService.createTextOutput("Sheet not found");
   }
 
-  // Update specific cells with the provided data
+  // Get data from POST request
+  var data = JSON.parse(e.postData.contents);  // assuming the data is sent as JSON
+
   sheet.getRange('B1').setValue(data.name || '');
   sheet.getRange('B2').setValue(data.dob || '');
   sheet.getRange('B4').setValue(data.month || '');
   sheet.getRange('B5').setValue(data.year || '');
+
+  return ContentService.createTextOutput('Data updated successfully');
 }
