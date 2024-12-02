@@ -61,16 +61,20 @@
     <script>
       // Load data when the page is loaded
       window.onload = function() {
-        // Fetch data from Google Apps Script (AppScript URL)
-        fetch("https://script.google.com/macros/s/AKfycbyNb4mFankb8leHY393Ix1D6cGBvALIoigjL3AY2nTvxQSzZ_m5sKvhDGwMK3ojS4TODA/exec")
-          .then(response => response.text())
-          .then(html => {
-            document.getElementById('sheetData').innerHTML = html; // Display the sheet data in the div
-          })
-          .catch(error => console.error('Error fetching data:', error));
+        fetchData();
       };
 
-      // Function to submit data to the sheet (via POST request)
+      // Function to fetch the table data from Google Apps Script
+      function fetchData() {
+        fetch("https://script.google.com/macros/s/AKfycbzEc3yjor3LrCRp15rda9I4xFDdN9A_AcqWmXWk_Lxlrm14JEuCgYXTkWHwiVhHYuYeDw/exec")
+          .then(response => response.text())
+          .then(htmlContent => {
+            document.getElementById('sheetData').innerHTML = htmlContent;
+          })
+          .catch(error => console.log(error));
+      }
+
+      // Function to submit data to Google Sheets via Google Apps Script
       function submitData() {
         const data = {
           name: document.getElementById('name').value,
@@ -78,21 +82,20 @@
           month: document.getElementById('month').value,
           year: document.getElementById('year').value,
         };
-
-        // Send data to Google Apps Script (AppScript URL) via POST
-        fetch("https://script.google.com/macros/s/AKfycbyNb4mFankb8leHY393Ix1D6cGBvALIoigjL3AY2nTvxQSzZ_m5sKvhDGwMK3ojS4TODA/exec", {
+        
+        // Send data to the backend
+        fetch("https://script.google.com/macros/s/AKfycbzEc3yjor3LrCRp15rda9I4xFDdN9A_AcqWmXWk_Lxlrm14JEuCgYXTkWHwiVhHYuYeDw/exec", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(data)
         })
-        .then(response => response.text())
-        .then(message => {
-          alert(message); // Show confirmation message
-          window.location.reload();  // Reload the page to show updated data
+        .then(response => {
+          alert('Data submitted successfully!');
+          fetchData(); // Refresh data after submission
         })
-        .catch(error => console.error('Error submitting data:', error));
+        .catch(error => console.log(error));
       }
     </script>
   </body>
