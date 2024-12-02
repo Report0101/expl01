@@ -62,7 +62,7 @@
       // Load data when the page is loaded
       window.onload = function() {
         // Make an HTTP request to the Google Apps Script to fetch the data
-        fetch("https://script.google.com/macros/s/AKfycbypOs40LlSA9LeY4UiGx3SgHzKCtlUJvBMODUnUabkD/dev")
+        fetch("https://script.google.com/macros/s/AKfycbyNb4mFankb8leHY393Ix1D6cGBvALIoigjL3AY2nTvxQSzZ_m5sKvhDGwMK3ojS4TODA/exec")
           .then(response => response.text())
           .then(html => {
             document.getElementById('sheetData').innerHTML = html; // Display the sheet data
