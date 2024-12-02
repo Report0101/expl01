@@ -37,7 +37,8 @@
   </head>
   <body>
     <h1>Spreadsheet Input/Output</h1>
-    
+
+    <!-- Form to input data -->
     <form id="dataForm">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" />
@@ -58,15 +59,15 @@
     <div id="sheetData"></div>
 
     <script>
-      // URL for your Google Apps Script Web App
-      const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwiGS3LruSZCUowGxosG39rggxDYKf_v_6q7Vrwp4F6_RhPZs9zGeZmqaKXfFa85mgQQA/exec';  // Replace with your web app URL
+      // Google Apps Script Web App URL (replace with your own)
+      const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkDGXlTtmMNeL1o7bH-kzTyxizHTlja4Bi3z8Uz30-CniKy2Y1_sP1qw4QtaADOi8kDQ/exec';  // Replace with your URL
 
-      // Load data when the page is loaded
+      // Load the data from the Google Apps Script Web App on page load
       window.onload = function() {
         fetchData();
       };
 
-      // Fetch data from the Google Apps Script Web App
+      // Fetch the data and display it as an HTML table
       function fetchData() {
         fetch(APP_SCRIPT_URL)
           .then(response => response.text())
@@ -85,6 +86,7 @@
           year: document.getElementById('year').value,
         };
 
+        // Send the data as JSON using POST method
         fetch(APP_SCRIPT_URL, {
           method: 'POST',
           headers: {
@@ -95,7 +97,7 @@
         .then(response => response.text())
         .then(responseText => {
           alert(responseText);  // Show confirmation message
-          fetchData();  // Refresh the data on the page after submission
+          fetchData();  // Refresh the displayed data
         })
         .catch(error => console.error('Error submitting data:', error));
       }
